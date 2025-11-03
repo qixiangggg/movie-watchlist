@@ -1,7 +1,7 @@
 const inputEl = document.querySelector("input")
 const imdbIDList = []
 let movieList = []
-const watchList = []
+const watchList = JSON.parse(localStorage.getItem("watchlist"))
 document.querySelector("form").addEventListener('submit', async (e) => {
     e.preventDefault()
     const responseMovieId = await fetch(`https://www.omdbapi.com/?apikey=4f70a2f8&s=${inputEl.value}`)
@@ -47,9 +47,12 @@ document.querySelector("form").addEventListener('submit', async (e) => {
 
 document.querySelector("main").addEventListener('click',function(e){
     if(e.target.dataset.imdbid){
-        console.log(e.target.dataset.imdbid)
-        const selectedMovie = movieList.filter(movie => movie.imdbID === e.target.dataset.imdbid)
-        watchList.push(...selectedMovie)
+        const selectedMovie = movieList.find(movie => movie.imdbID === e.target.dataset.imdbid)
+        if (!watchList.includes(selectedMovie)){
+            watchList.push(selectedMovie)
+            console.log(watchList)
+            localStorage.setItem("watchlist",JSON.stringify(watchList))
+        }
     }
 
 })
