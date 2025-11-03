@@ -2,18 +2,45 @@ const inputEl = document.querySelector("input")
 const imdbIDList = []
 let movieList = []
 const watchList = JSON.parse(localStorage.getItem("watchlist")) || []
+const mainEl = document.querySelector("main")
 document.querySelector("form").addEventListener('submit', async (e) => {
     e.preventDefault()
     const responseMovieId = await fetch(`https://www.omdbapi.com/?apikey=4f70a2f8&s=${inputEl.value}`)
     const movieIdData = await responseMovieId.json()
+    if(movieIdData.Response==="False"){
+        mainEl.innerHTML = `
+        <div class="container">
+            <p class="movie-not-found">Unable to find what you're looking for. Please try another search.</p>
+        </div>`
+        
+    }else{
+        renderMovieList(movieIdData)
+    }
+    
+    
+})
+
+mainEl.addEventListener('click',function(e){
+    const selectedMovideId = e.target.dataset.imdbid
+    if(selectedMovideId){
+        const selectedMovie = movieList.find(movie => movie.imdbID === selectedMovideId)
+        if (!watchList.some(selectedMovie => selectedMovie.imdbID === selectedMovideId)){
+            watchList.push(selectedMovie)
+            localStorage.setItem("watchlist",JSON.stringify(watchList))
+        }
+    }
+
+})
+
+async function renderMovieList(movieIdData){
     const movieIDList = movieIdData.Search.map(movie => movie.imdbID)
-    movieList= await Promise.all(
+    movieList = await Promise.all(
         movieIDList.map(async (movieID) => {
             const response = await fetch(`https://www.omdbapi.com/?apikey=4f70a2f8&i=${movieID}`)
             return response.json()
         })
     )
-    document.querySelector("main").innerHTML = movieList.map(
+    mainEl.innerHTML = movieList.map(
         movie =>
         `
         <div class="container">
@@ -42,18 +69,5 @@ document.querySelector("form").addEventListener('submit', async (e) => {
         </div>
         `
         
-    ).join()   
-})
-
-document.querySelector("main").addEventListener('click',function(e){
-    const selectedMovideId = e.target.dataset.imdbid
-    if(selectedMovideId){
-        const selectedMovie = movieList.find(movie => movie.imdbID === selectedMovideId)
-        if (!watchList.some(selectedMovie => selectedMovie.imdbID === selectedMovideId)){
-            watchList.push(selectedMovie)
-            console.log(watchList)
-            localStorage.setItem("watchlist",JSON.stringify(watchList))
-        }
-    }
-
-})
+    ).join('')   
+}

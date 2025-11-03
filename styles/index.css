@@ -139,6 +139,11 @@ hr{
     width: 100%;
 }
 
-
+.movie-not-found{
+    text-align: center;
+    color: #DFDDDD;
+    font-weight: 700;
+    font-size: 1.125rem;
+}
 
 

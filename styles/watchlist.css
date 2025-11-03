@@ -126,3 +126,8 @@ hr{
     margin-top: 1.25em;
     width: 100%;
 }
+
+a{
+    text-decoration: none;
+    color: inherit;
+}

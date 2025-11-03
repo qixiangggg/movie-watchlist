@@ -1,7 +1,13 @@
 let watchList = JSON.parse(localStorage.getItem("watchlist")) || []
 
 function renderWatchlist(){
-    document.querySelector("main").innerHTML = watchList.map(movie => 
+    if (watchList.length === 0){
+        document.querySelector("main").innerHTML = `
+        <p class="watchlist-empty">Your watchlist is looking a little empty...</p>
+        <a class="add-movies-btn" href="./index.html"><span class="add-icon">+</span><span> Let's add some movies!</span></a>`
+    }
+    else{
+       document.querySelector("main").innerHTML = watchList.map(movie => 
     `
             <div class="container">
                 <section class="movie-section">
@@ -26,7 +32,8 @@ function renderWatchlist(){
                     </div>
                 </section>
                 <hr>
-            </div>`).join()
+            </div>`).join() 
+        }
     }
         
 document.querySelector('main').addEventListener('click', function(e){
@@ -39,7 +46,6 @@ document.querySelector('main').addEventListener('click', function(e){
             document.querySelector("main").innerHTML = `<p class="watchlist-empty">Your watchlist is looking a little empty...</p>
             <a class="add-movies-btn"><span class="add-icon">+</span><span> Let's add some movies!</span></a>`
         }
-        console.log(watchList.length)
         renderWatchlist()
     }
 })
